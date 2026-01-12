@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Active Face-Match Ripple UI | AuraVision AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b7cee",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0a0f16",
+                        "surface-dark": "#161f2c",
+                        "accent-neon": "#00f2ff",
+                        "accent-purple": "#bc00ff"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .ripple-cyan {
+                border: 2px solid theme('colors.accent-neon');
+                box-shadow: 0 0 20px theme('colors.accent-neon');
+            }
+            .ripple-purple {
+                border: 2px solid theme('colors.accent-purple');
+                box-shadow: 0 0 20px theme('colors.accent-purple');
+            }
+            .pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        }
+        .ripple-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }.active-ripple-1 { width: 30%; height: 30%; opacity: 0.8; border: 2px solid #00f2ff; }
+        .active-ripple-2 { width: 60%; height: 60%; opacity: 0.5; border: 2px solid #bc00ff; }
+        .active-ripple-3 { width: 90%; height: 90%; opacity: 0.3; border: 2px solid #00f2ff; border-style: dashed; }
+        .dimmed-gallery {
+            filter: brightness(0.4) saturate(0.8);
+            transition: filter 0.5s ease;
+        }
+        .match-highlight {
+            filter: brightness(1.1) saturate(1.2);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] animate-bounce">
+<div class="bg-gradient-to-r from-accent-neon via-primary to-accent-purple p-[2px] rounded-full shadow-[0_0_30px_rgba(0,242,255,0.5)]">
+<div class="bg-surface-dark px-8 py-3 rounded-full flex items-center gap-4">
+<span class="material-symbols-outlined text-accent-neon fill-1">verified_user</span>
+<div class="flex flex-col">
+<span class="text-white font-bold text-sm tracking-tight">Match Found!</span>
+<span class="text-accent-neon text-xs font-black">94% CONFIDENCE SCORE</span>
+</div>
+<div class="h-8 w-[1px] bg-slate-700 mx-2"></div>
+<span class="text-white/60 text-[10px] font-bold uppercase tracking-widest">Target ID: USER_0942</span>
+</div>
+</div>
+</div>
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6 text-accent-neon">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">AuraVision AI</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-slate-400 flex border-none bg-slate-100 dark:bg-surface-dark items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-slate-100 dark:bg-surface-dark focus:border-none h-full placeholder:text-slate-400 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search event photos..."/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Events</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Face Database</a>
+<a class="text-accent-neon text-sm font-bold leading-normal border-b-2 border-accent-neon" href="#">Visualizer</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-primary/90">
+<span class="material-symbols-outlined mr-2 text-[18px]">face</span>
+                Find My Face
+            </button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-accent-neon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2S3n3FpQWjulbMMJPtgcehS-A573fw31BnaXRRmP4jIu3WN84Mh2ReQd1kVOlQdeh_tdtKLWyhng-nDj37-Ji0pz4N_aOI15ca1NW9IbyymQiegevA_qeIeL_CJWfoCgDxDUXWkfyLdMcmFNYXv5zV5IxEGOwtI6s3huOHq6h9grf9hYcFKlnj5hyALlhHrTspVzp-sw6G1g3xIkQlj-d5dkytQcRKWn9-i6eg9rzGtXycqJVczavSxlyiwn0fdmnB1WWi9RWZxA");'></div>
+</div>
+</div>
+</header>
+<main class="flex h-[calc(100vh-64px)] overflow-hidden">
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark hidden lg:flex flex-col shrink-0">
+<div class="p-6 flex flex-col gap-8 h-full">
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-white text-lg font-bold">TechCon 2024</h1>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-neon animate-pulse"></span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-normal">Matching Active: 12 Results</p>
+</div>
+</div>
+<button class="w-full bg-gradient-to-br from-accent-neon to-primary hover:from-accent-neon/90 hover:to-primary/90 text-white p-4 rounded-xl shadow-lg shadow-primary/20 flex flex-col items-center gap-2 transition-all transform active:scale-95">
+<span class="material-symbols-outlined text-[32px]">folder_zip</span>
+<span class="text-sm font-bold uppercase tracking-wider">Download All Matches</span>
+<span class="text-[10px] opacity-80 font-medium">12 High-Res Photos</span>
+</button>
+<div class="flex flex-col gap-2">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3">Navigation</p>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-accent-neon/10 text-accent-neon border border-accent-neon/20">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<p class="text-sm font-bold">Gallery View</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">3d_rotation</span>
+<p class="text-sm font-medium">3D Event Map</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<p class="text-sm font-medium">Biometric Stats</p>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-4 border-t border-slate-200 dark:border-slate-800 pt-6">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3">Backend Status</p>
+<div class="bg-slate-100 dark:bg-surface-dark rounded-lg p-3">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] text-slate-500 font-bold">GPU LOAD</span>
+<span class="text-[10px] text-accent-neon font-bold">92%</span>
+</div>
+<div class="h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-accent-neon w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<section class="flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/80 relative">
+<div class="p-6">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold flex items-center gap-3 text-2xl">
+                        Face-Match Results
+                        <span class="px-3 py-1 rounded-full bg-accent-neon/20 text-[12px] text-accent-neon font-black uppercase tracking-widest border border-accent-neon/30">Target Identified</span>
+</h3>
+<p class="text-slate-500 text-sm mt-1">Showing all instances of your face detected in the 3D capture stream.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-surface-dark border border-slate-800 rounded-lg flex p-1">
+<button class="p-2 text-slate-400 hover:text-accent-neon"><span class="material-symbols-outlined">filter_list</span></button>
+<button class="p-2 text-slate-400 hover:text-accent-neon"><span class="material-symbols-outlined">sort</span></button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border-[4px] border-accent-neon match-highlight">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQqLM9yUXX9sjLAgskrArR7wD9UmjLjn8yCCdrylbVJ43Zrc_yf1PSV8y8LivCt0rf98-g22yiXgs_pKkeEPkAyKl4lKIfzypvNN7unXR1xx9P2XtFxTwAOHcixMq_P_ZgR8SIar5NJQ-mLjNi_jgGT0t0WawXIv9xgRV7XSx2-_o0O7xGFa2A_FQ8LteNiA63fqmS5Jzm9dQCJQOl-22ZWZZEkWXbFJMbu54fTVRaMxL0tlKpilf9af5ZS_uVQweV7TP9cj7bBMQ"/>
+<div class="absolute inset-0 bg-accent-neon/10 backdrop-blur-[1px]"></div>
+<div class="ripple-container">
+<div class="ripple active-ripple-1"></div>
+<div class="ripple active-ripple-2"></div>
+<div class="ripple active-ripple-3"></div>
+</div>
+<div class="absolute top-4 left-4 bg-accent-neon text-background-dark text-[11px] font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(0,242,255,0.6)]">98.4% MATCH</div>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
+<div class="flex justify-between items-center">
+<p class="text-white text-xs font-bold">CAM_04_INDEX_A</p>
+<span class="material-symbols-outlined text-accent-neon text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIfIKcKptX2wrnwNg1BOQknKQVyWlflXJWB-bnG8xzvA5efVSYZGPyCgNj9VwiV2kqnOAELRe056nVfGqeZZj3WPKyHkNgGUVi2f5gl50ddT5uCBtvxSwdKHsFc7a0u8ou4473c0jdCfiebpKyhOfPyLghWQaj-ThQsc1pkz-LD912QsVeWF2BugukoWqFh5xjoQs9wRhgGO61wmLKCVMH5DdMpIAtaC_TOFGUFZPAnIh8eUHtZfICCjWDRk6ggk17xo4DucVQK_c"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-white/10 backdrop-blur-md p-3 rounded-full text-white border border-white/20">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border-[4px] border-accent-neon match-highlight">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-JM3rrAiGDQ5VODnWh-EDBiJo0afqUpLTveByxohuIS2zeK4eeKal75Ij-W4QEGAqQ6RD8UadnlTA_tcpu7cItvyNP7Gja6uUEL-NwXA3XRZgOp9M9tOrkTjppQmJci_syIJrw_e_XYYltgD3hR_vwnQhLl2woZhb8dtmwPk5Gst5vMaq5942ypiHFQ9vegI6y_51hHjISvQFgLXQhS60JKXH8QUsIySvMOaO6u3bCp3-mj-WhsAHc7-kopfNq6SF3Ryep_hJ3T4"/>
+<div class="absolute inset-0 bg-accent-purple/10 backdrop-blur-[1px]"></div>
+<div class="ripple-container">
+<div class="ripple active-ripple-1 border-accent-purple"></div>
+<div class="ripple active-ripple-2 border-accent-neon"></div>
+<div class="ripple active-ripple-3 border-accent-purple"></div>
+</div>
+<div class="absolute top-4 left-4 bg-accent-purple text-white text-[11px] font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(188,0,255,0.6)]">94.1% MATCH</div>
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
+<div class="flex justify-between items-center">
+<p class="text-white text-xs font-bold">SEC_CAM_091</p>
+<span class="material-symbols-outlined text-accent-purple text-[20px] fill-1">check_circle</span>
+</div>
+</div>
+</div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUEajZF4SOqSnH4O_AOJMAOIMaBDAbvP2sCNLtzVerC74OSNDgo85B6SHlWsMYZVB05RvTQ8ROs8GhS4Me9TLk6z9MyzJxRzzd8I0YheVsCZXmJZpr13-sJSzJerrKBuc13w7TXuOofAeuyYu0Epldcb5FJDtni5AJtuKq_RQPldmbLvqw_ZJsBqwBR3oDMvxjs-WGLw6p_IGBaaoVHrPYmC9CfQsPhu9UPYhbDD-rwGk50O2a56Jle5H0oSXmR43v9_U_3o_Sk38"/>
+</div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery"><img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAisAfgclcE18KsbbJLOV3ECsz_upz9WrNfuJ-vmAXrZXvxSlzixLoYrAH_eCGPo0-Q5EUhS7PYBkiVsqfDku1h62_Ux9RVDuSXk7HD9ZxXOKrwvfvFRXep6nWXp3nt5d2pId2jabjkFXMphqWmOLgtUi3iyX51tOLaUrY9Qk5Xw0ZGWFf1w8c8iqpPeeJ4HIPwUWB8sqarHIfgt8erDBvSf2WSvdLZdVv99VBD6S2zSoM3Lhvu_kntJP_llDvmoI9xt8cn3oQfK00"/></div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery"><img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLLymzCTAOyg8m6I6ou3hYqijZm1xaZkHbGxd4KBjM6dE7-VeW63HbDcUpCFZCYoL0UHd7-FviGJDJWTWujEQLazKZSqY7k8NbkwdmUSvpgzVlCRXM_xY5FqLW8rEoY3SHEUnZ7E_apiwCCqdfi8zqaIFs1LQj9O4sywsMmmEkrTO3AEeiN5SM_cqiflWZq6dRqTyb2CsDbCufUf-1d-xbBFmSCtQjz-QfpvatjIN9yvcEVj-Bn3Ib-_GEK8nfUKDmOfGhmPQSCIU"/></div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery"><img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApBBbnUxVHnZv-rucRiWNtDI_gpFS50lgLNYkskkaBq6m0XeAgWtINYhOnZAG_yYzF_v6YNf9qLJ8opC3i4cX9PUKZlhYOtnd7y1kQhBK8WaeAn5gRcOPfauJV_f6S-SOYoHOOu5StYGLJAKsKvzl4-UPJjEsBzgE8HBHS594SmnS-sWkmVKWhSGD6f4qP0goCaY8VO7fxdez6ZRs83OtgnIMa8O4W-veHF8NqqMZMKNJiBdHrmD_5ZWdKVXtHrB9SfJkQhzAgKpU"/></div>
+<div class="relative group aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border border-slate-800 dimmed-gallery"><img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeYJiKRohbK7h_fqqUEBnoPyjP6XWNyMiLTLmAD348yUEbp-wfbngBMzCKeLQH3ug7knVlq5ZBDt5R2_yNuHZupmI9yQq78qq3TqX2M4L3FSJrdIX5RiSP7pgZkDdY33ay9qL4aMZ2OPWnizzGGY5VoAf9QujtUrqDeRjIV_hDg4tA54_26PMgdqAQd68GBaz5Om_D7p81JMnIfiU9uSpptGwBp5h4nEXk_Fh2BO2abplwbxvimMf2vmVaNT8V186J_WLSRuRRlAw"/></div>
+</div>
+</div>
+</section>
+<aside class="w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark hidden xl:flex flex-col shrink-0">
+<div class="p-6 overflow-y-auto h-full space-y-8">
+<div class="bg-surface-dark rounded-xl p-4 border border-accent-neon/20 shadow-lg">
+<h3 class="text-accent-neon text-xs font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">android_fingerprint</span>
+                    Match Intelligence
+                </h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-[11px] text-slate-500">Global Rank</span>
+<span class="text-xs text-white font-bold">#1 Identified</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[11px] text-slate-500">Clusters</span>
+<span class="text-xs text-white font-bold">4 Nodes</span>
+</div>
+<div class="h-[1px] bg-slate-800 w-full"></div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[10px] text-slate-400">
+<span>RELIABILITY INDEX</span>
+<span>EXTREME</span>
+</div>
+<div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-accent-neon to-accent-purple w-[94%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white text-sm font-bold flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-[18px]">info</span>
+                    METADATA STREAM
+                </h3>
+<div class="space-y-3 font-mono text-[10px]">
+<div class="p-2 bg-surface-dark/50 rounded flex justify-between">
+<span class="text-slate-500 uppercase">Latency</span>
+<span class="text-accent-neon">42ms</span>
+</div>
+<div class="p-2 bg-surface-dark/50 rounded flex justify-between">
+<span class="text-slate-500 uppercase">Detection_Engine</span>
+<span class="text-slate-200">v4.8.2-Neural</span>
+</div>
+<div class="p-2 bg-surface-dark/50 rounded flex justify-between">
+<span class="text-slate-500 uppercase">Euclidean_Dist</span>
+<span class="text-slate-200">0.0824</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white text-sm font-bold flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary text-[18px]">cloud_download</span>
+                    EXPORT OPTIONS
+                </h3>
+<div class="grid grid-cols-2 gap-2">
+<button class="bg-slate-800/50 hover:bg-slate-800 p-3 rounded-lg flex flex-col items-center gap-1 border border-slate-700 transition-colors">
+<span class="text-[10px] font-black text-slate-300">RAW</span>
+<span class="text-[8px] text-slate-500 uppercase">Uncompressed</span>
+</button>
+<button class="bg-slate-800/50 hover:bg-slate-800 p-3 rounded-lg flex flex-col items-center gap-1 border border-slate-700 transition-colors">
+<span class="text-[10px] font-black text-slate-300">WEBP</span>
+<span class="text-[8px] text-slate-500 uppercase">Optimized</span>
+</button>
+<button class="bg-slate-800/50 hover:bg-slate-800 p-3 rounded-lg flex flex-col items-center gap-1 border border-slate-700 transition-colors">
+<span class="text-[10px] font-black text-slate-300">JSON</span>
+<span class="text-[8px] text-slate-500 uppercase">Vector Data</span>
+</button>
+<button class="bg-accent-neon/10 border border-accent-neon/30 hover:bg-accent-neon/20 p-3 rounded-lg flex flex-col items-center gap-1 transition-colors">
+<span class="text-[10px] font-black text-accent-neon">CSV</span>
+<span class="text-[8px] text-accent-neon/70 uppercase">Audit Log</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<div class="fixed bottom-6 right-6 z-50">
+<div class="bg-background-dark/90 backdrop-blur-xl border border-accent-neon/30 px-5 py-3 rounded-2xl flex items-center gap-4 shadow-2xl">
+<div class="relative w-2 h-2">
+<div class="absolute inset-0 bg-accent-neon rounded-full animate-ping"></div>
+<div class="relative bg-accent-neon rounded-full w-2 h-2"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-accent-neon font-black uppercase tracking-[0.2em]">Live Tracking</span>
+<span class="text-[11px] text-white">Syncing with TechCon 3D Mesh...</span>
+</div>
+</div>
+</div>
+
+</body></html>

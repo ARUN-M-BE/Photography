@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Event Dashboard | 3D Visualization</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b7cee",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(25, 36, 51, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .carousel-card {
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+            perspective: 1000px;
+        }
+        .carousel-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(43, 124, 238, 0.2);
+            border-color: #2b7cee;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101822;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233348;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2b7cee;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-[#233348] bg-background-light dark:bg-background-dark flex flex-col">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(43,124,238,0.5)]">
+<span class="material-symbols-outlined text-white text-2xl">neurology</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">Event AI</h1>
+<p class="text-[10px] text-primary font-bold uppercase tracking-widest">Enterprise v2.4</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" href="#">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#92a9c9] hover:bg-[#192433] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-medium text-sm">Event Manager</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#92a9c9] hover:bg-[#192433] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">face</span>
+<span class="font-medium text-sm">Face Gallery</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#92a9c9] hover:bg-[#192433] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium text-sm">Analytics Hub</span>
+</a>
+<div class="pt-4 pb-2 px-4">
+<p class="text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Integrations</p>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#92a9c9] hover:bg-[#192433] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">cloud_sync</span>
+<span class="font-medium text-sm">Drive Sync</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#92a9c9] hover:bg-[#192433] hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium text-sm">System Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-[#233348]">
+<div class="glass-panel p-4 rounded-xl space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs text-[#92a9c9]">System Health</span>
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+</div>
+<div class="w-full bg-[#111822] h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[94%]"></div>
+</div>
+<p class="text-[10px] text-[#92a9c9]">AI Processing Engine: 94%</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- Top Bar -->
+<header class="h-16 border-b border-[#233348] px-8 flex items-center justify-between sticky top-0 z-30 bg-background-dark/80 backdrop-blur-md">
+<div class="flex-1 max-w-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9] text-xl">search</span>
+<input class="w-full bg-[#192433] border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary placeholder:text-[#4a5f7a]" placeholder="Search events, faces, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 rounded-lg hover:bg-[#192433] transition-colors">
+<span class="material-symbols-outlined text-[#92a9c9]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-dark"></span>
+</button>
+<div class="h-8 w-[1px] bg-[#233348]"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-white leading-none">Alex Rivera</p>
+<p class="text-[10px] text-[#92a9c9] mt-1">Lead Admin</p>
+</div>
+<div class="size-10 rounded-full bg-center bg-cover ring-2 ring-primary/20" data-alt="User avatar of Alex Rivera" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCH1Osv1ZaGRA_lq4VCY-8-sY5kezeaMFauhCHqPGI8rwBYxH09phs0j8U5f3vYLYOhFZzNGRf7rMh93pR29uYeSI5mwiI1GZ_UnYsuSc0CWa-q1theOaOHIt2R24cUPubD2nlsBSeaUIgoJQoSKfuAKw6WJADEZnsI6WYTverBzKxiceNhqNb_uoT8KKM4WAihukbDnS0x1qvQrfUGfUvBKLRkC9mHyboek3gWRg5QX_CUys8Cehxg4VG-i2Rf3TWsgQ7AZjtaO5w');"></div>
+</div>
+</div>
+</header>
+<!-- Dashboard Body -->
+<div class="p-8 space-y-8">
+<!-- Hero Section / 3D Carousel Simulation -->
+<section>
+<div class="flex items-end justify-between mb-6">
+<div>
+<h2 class="text-3xl font-bold tracking-tight">Active Events</h2>
+<p class="text-[#92a9c9] mt-1">Live 3D visualization of your event ecosystem.</p>
+</div>
+<div class="flex gap-2">
+<button class="size-10 flex items-center justify-center rounded-lg bg-[#192433] text-white hover:bg-[#233348] border border-[#324867]">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-lg bg-[#192433] text-white hover:bg-[#233348] border border-[#324867]">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Carousel Container (Mocking 3D effect with CSS) -->
+<div class="flex gap-6 overflow-x-auto pb-8 snap-x">
+<!-- Card 1 -->
+<div class="carousel-card snap-center flex-shrink-0 w-[300px] glass-panel rounded-2xl overflow-hidden group cursor-pointer border-[#233348]">
+<div class="h-48 bg-cover bg-center relative" data-alt="High tech networking event visualization" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBYPg8krU9wwyG3YhgQq61veMIN_bj6iP-SYNfFVztvqfrjkLMYKHGoXuliDTP25EWGpA3tsFUMkVyfr5NurrQ5xcakKD_JVP5gPgp8NEJ52s0NmIZcsvMWaJQc8bJrna9MtiEDVyd3gKMfUF3WViTG1GkW0utvTMKHOeImI-vetq_EoVAmJNph0NWtGSAN-zrTO0c5h6AqKczsBlEu-OdxAF7g70hD_bEb5YBdPP8Mr1v8PNYQTbWIhD6NaU8t6Pv29Os_moHqWKc');">
+<div class="absolute inset-0 bg-gradient-to-t from-[#192433] to-transparent"></div>
+<div class="absolute top-4 left-4 bg-primary px-2 py-1 rounded text-[10px] font-bold uppercase">Live Now</div>
+</div>
+<div class="p-6 space-y-4">
+<div>
+<h3 class="text-lg font-bold">Tech Summit 2024</h3>
+<p class="text-xs text-[#92a9c9] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-xs">location_on</span> San Francisco, CA
+                                    </p>
+</div>
+<div class="flex justify-between items-center text-sm">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Attendees</span>
+<span class="font-bold">1.2k</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Matches</span>
+<span class="font-bold text-primary">842</span>
+</div>
+</div>
+<button class="w-full py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-bold transition-all border border-primary/20">
+                                    Enter 3D Space
+                                </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="carousel-card snap-center flex-shrink-0 w-[300px] glass-panel rounded-2xl overflow-hidden group cursor-pointer border-[#233348]">
+<div class="h-48 bg-cover bg-center relative" data-alt="Global AI Expo digital rendering" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9_FiJ4It8LYCtohls2eSQWiXy4wLT05QowHon4WuRVfOQmIrcaoC1C276ZDeDzXKTRuMRz1I3b8pQYCjJk5GAa3T4xKZSN7DJnrFZjK57YMi4CZXwZ2ri5rE9Xdg1V68Lonf5qmW0H3mNtg6DBStaHg94WJPJ64W_p4g5l7QxJgU-F_TySTeNdenRRSkY-FwESpaB0IDzG8TpLg2T-bRSpYjf0J4Y3liDMOalcFdf8CGIPrORIGjZgXuHAETyBEeXB5lB_SVWw3s');">
+<div class="absolute inset-0 bg-gradient-to-t from-[#192433] to-transparent"></div>
+<div class="absolute top-4 left-4 bg-[#233348] px-2 py-1 rounded text-[10px] font-bold uppercase">Upcoming</div>
+</div>
+<div class="p-6 space-y-4">
+<div>
+<h3 class="text-lg font-bold">Global AI Expo</h3>
+<p class="text-xs text-[#92a9c9] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-xs">location_on</span> London, UK
+                                    </p>
+</div>
+<div class="flex justify-between items-center text-sm">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Attendees</span>
+<span class="font-bold">3.5k</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Status</span>
+<span class="font-bold text-amber-500">Syncing</span>
+</div>
+</div>
+<button class="w-full py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-bold transition-all border border-primary/20">
+                                    Configure View
+                                </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="carousel-card snap-center flex-shrink-0 w-[300px] glass-panel rounded-2xl overflow-hidden group cursor-pointer border-[#233348]">
+<div class="h-48 bg-cover bg-center relative" data-alt="Cybersecurity Workshop digital interface" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8Uongzlza5_qMLCHW0wxbrzFnK0urO8JKx2mb-uxEqe9GxR9dmrZucpWcz9eVFB4QuiEmHgUJde_pwYhaDVmaDv_ymNUjyH4D9Z-clhZiZ6lQ58ymbDwg_GZuI7HSqDjcUYE3-TZVzcKf7_Z3lnO6UTw2yJN6-JkpS1QpqHNgW8qX9nbfZpGv4dRoQ_gXtjidyrL8KLOnzJxwUvtjpbESGzhpTqhWJeFjZJRmFCbel5NGL04cKTdpowLbS8M3PUXE2vqyh8-pACc');">
+<div class="absolute inset-0 bg-gradient-to-t from-[#192433] to-transparent"></div>
+<div class="absolute top-4 left-4 bg-primary px-2 py-1 rounded text-[10px] font-bold uppercase">Processing</div>
+</div>
+<div class="p-6 space-y-4">
+<div>
+<h3 class="text-lg font-bold">Cyber Workshop</h3>
+<p class="text-xs text-[#92a9c9] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Remote
+                                    </p>
+</div>
+<div class="flex justify-between items-center text-sm">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Nodes</span>
+<span class="font-bold">42</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Analysis</span>
+<span class="font-bold text-primary">68%</span>
+</div>
+</div>
+<button class="w-full py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-bold transition-all border border-primary/20">
+                                    View Logs
+                                </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="carousel-card snap-center flex-shrink-0 w-[300px] glass-panel rounded-2xl overflow-hidden group cursor-pointer border-[#233348]">
+<div class="h-48 bg-cover bg-center relative" data-alt="Robotics Gala abstract art" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDImP0BGFLFpOqfPPEJpjzg2tebNK0PScuQBp8f-MEBniKxKOlyiluvMYtI9Bl9CCxmUxRaeTof3t4imOfmAv-az7Z4XgGqXeONT2_pi1DV0LEZhl2jnVWC9Vychna82oC9qXeQRMXh6uDAHN4VANn9CML9hZwQgtxaQ0ounhWVg84IgVOTVngl46HqoDyEjhcBAER68lAEhPLCvf-K4oDp-qIUQmZwVxsS2FMHzhEMcnc8-pldK2iBPouoFyRbFZGCqCtIXkmqOf8');">
+<div class="absolute inset-0 bg-gradient-to-t from-[#192433] to-transparent"></div>
+<div class="absolute top-4 left-4 bg-[#233348] px-2 py-1 rounded text-[10px] font-bold uppercase">Archived</div>
+</div>
+<div class="p-6 space-y-4">
+<div>
+<h3 class="text-lg font-bold">Robotics Gala</h3>
+<p class="text-xs text-[#92a9c9] flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Tokyo, JP
+                                    </p>
+</div>
+<div class="flex justify-between items-center text-sm">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Guests</span>
+<span class="font-bold">850</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-[10px] text-[#4a5f7a] uppercase font-bold">Accuracy</span>
+<span class="font-bold text-primary">99.1%</span>
+</div>
+</div>
+<button class="w-full py-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg text-sm font-bold transition-all border border-primary/20">
+                                    Replay Data
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Facial Recognition Status Panel -->
+<div class="lg:col-span-1 glass-panel rounded-2xl p-6 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">camera_front</span>
+<h3 class="text-lg font-bold">Face Recognition Status</h3>
+</div>
+<div class="space-y-4">
+<div class="p-4 bg-[#111822] rounded-xl border border-[#233348]">
+<div class="flex justify-between mb-2">
+<span class="text-sm text-[#92a9c9]">Match Accuracy Threshold</span>
+<span class="text-sm font-bold text-primary">80%</span>
+</div>
+<div class="w-full bg-[#192433] h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[80%] shadow-[0_0_10px_#2b7cee]"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-[#111822] rounded-xl border border-[#233348]">
+<p class="text-[10px] text-[#4a5f7a] uppercase font-bold mb-1">Total Faces</p>
+<p class="text-2xl font-bold tracking-tight">14,282</p>
+</div>
+<div class="p-4 bg-[#111822] rounded-xl border border-[#233348]">
+<p class="text-[10px] text-[#4a5f7a] uppercase font-bold mb-1">Active Cams</p>
+<p class="text-2xl font-bold tracking-tight text-green-500">12</p>
+</div>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<div class="flex items-center gap-1.5 text-[#92a9c9]">
+<span class="size-2 rounded-full bg-green-500"></span>
+                                    Recognition Engine Live
+                                </div>
+<div class="flex items-center gap-1.5 text-[#92a9c9]">
+<span class="size-2 rounded-full bg-blue-500"></span>
+                                    Database Encrypted
+                                </div>
+</div>
+</div>
+</div>
+<!-- Sync/Integration Panel -->
+<div class="lg:col-span-2 glass-panel rounded-2xl p-6">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">sync_alt</span>
+<h3 class="text-lg font-bold">Google Drive Folder Sync</h3>
+</div>
+<span class="px-3 py-1 bg-primary/20 text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-primary/20">Cloud Integration</span>
+</div>
+<p class="text-sm text-[#92a9c9] mb-4">Automatically ingest attendee profile photos from a shared Drive folder. AI will process faces in the background.</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex-1">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#92a9c9] text-xl">link</span>
+<input class="w-full bg-[#111822] border-[#324867] rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-primary focus:border-primary text-white placeholder:text-[#4a5f7a]" placeholder="https://drive.google.com/drive/folders/..." type="text"/>
+</div>
+</div>
+<button class="px-8 py-3 bg-primary hover:bg-primary/90 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">cloud_upload</span>
+                                Start Sync
+                            </button>
+</div>
+<div class="mt-6 flex items-center gap-6 text-xs text-[#4a5f7a]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                Auto-Refresh enabled
+                            </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">security</span>
+                                OAuth 2.0 Secure Access
+                            </div>
+</div>
+</div>
+</div>
+<!-- Event Calendar Section -->
+<section class="glass-panel rounded-2xl overflow-hidden">
+<div class="p-6 border-b border-[#233348] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">calendar_view_month</span>
+<h3 class="text-lg font-bold">Event Schedule</h3>
+</div>
+<div class="flex bg-[#111822] rounded-lg p-1 border border-[#233348]">
+<button class="px-4 py-1.5 text-xs font-bold rounded-md bg-[#192433] text-white">Month</button>
+<button class="px-4 py-1.5 text-xs font-bold rounded-md text-[#4a5f7a] hover:text-[#92a9c9]">Week</button>
+<button class="px-4 py-1.5 text-xs font-bold rounded-md text-[#4a5f7a] hover:text-[#92a9c9]">Day</button>
+</div>
+</div>
+<div class="p-6 overflow-x-auto">
+<div class="min-w-[800px]">
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-px bg-[#233348] border border-[#233348] rounded-xl overflow-hidden">
+<!-- Days Header -->
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Sun</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Mon</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Tue</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Wed</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Thu</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Fri</div>
+<div class="bg-[#111822] p-3 text-center text-[10px] font-bold text-[#4a5f7a] uppercase tracking-widest">Sat</div>
+<!-- Calendar Rows -->
+<!-- Simplified for view: only 2 rows -->
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">26</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">27</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">28</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">29</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">30</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-[#4a5f7a]">31</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">1</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white relative">
+                                    2
+                                    <div class="mt-2 p-1.5 bg-primary/20 border-l-2 border-primary rounded text-[10px] text-white font-medium truncate">
+                                        Board Meeting AI
+                                    </div>
+</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">3</div>
+<div class="bg-[#192433] min-h-[100px] p-3 text-sm text-primary font-bold border-2 border-primary/20">
+                                    4
+                                    <div class="mt-2 p-1.5 bg-primary text-white rounded text-[10px] font-bold truncate shadow-lg">
+                                        Tech Summit 2024
+                                    </div>
+<div class="mt-1 p-1.5 bg-amber-500 text-white rounded text-[10px] font-bold truncate">
+                                        Live Keynote
+                                    </div>
+</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">5</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">6</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">7</div>
+<div class="bg-[#111822] min-h-[100px] p-3 text-sm text-white">8</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Meta -->
+<footer class="mt-auto p-8 flex items-center justify-between border-t border-[#233348] bg-[#111822]/50">
+<p class="text-[10px] text-[#4a5f7a] uppercase font-bold tracking-[0.2em]">© 2024 Event AI Systems. Secure. Private. Scalable.</p>
+<div class="flex gap-4">
+<a class="text-[10px] text-[#4a5f7a] hover:text-primary uppercase font-bold tracking-widest transition-colors" href="#">Support</a>
+<a class="text-[10px] text-[#4a5f7a] hover:text-primary uppercase font-bold tracking-widest transition-colors" href="#">API Docs</a>
+<a class="text-[10px] text-[#4a5f7a] hover:text-primary uppercase font-bold tracking-widest transition-colors" href="#">Status</a>
+</div>
+</footer>
+</main>
+</div>
+</body></html>
